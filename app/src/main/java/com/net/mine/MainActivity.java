@@ -24,12 +24,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ListView pagination_list=findViewById(R.id.pagination_list);
-        Retrofit.Builder builder=new Retrofit.Builder()
+        Retrofit retrofit=new Retrofit.Builder()
                 .baseUrl("https://api.github.com/")
-                .addConverterFactory(GsonConverterFactory.create());
-        Retrofit retrofit=builder.build();
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
         GitHubClient client=retrofit.create(GitHubClient.class);
         Call<List<GitHubResponse>> call=client.responseForUser("FaceWallHan");
+
         call.enqueue(new Callback<List<GitHubResponse>>() {
             @Override
             public void onResponse(Call<List<GitHubResponse>> call, Response<List<GitHubResponse>> response) {
