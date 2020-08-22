@@ -1,6 +1,7 @@
-package com.net.mine;
+package com.net.mine.activity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -9,11 +10,15 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.net.mine.NetCall;
+import com.net.mine.NetRequest;
+import com.net.mine.R;
 import com.net.mine.client.Api;
 import com.net.mine.gson.Data;
 import com.net.mine.gson.Info;
 
-import java.io.IOException;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,6 +34,32 @@ public class MusicActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.music_layout);
         inView();
+        post_request.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                NetRequest request=new NetRequest();
+                request.addValue("format","json")
+                        .showDialog(MusicActivity.this)
+                        .setLoop(true,3000)
+                        .setUrl("rand.qinghua")
+                        .setNetCall(new NetCall() {
+                    @Override
+                    public void onSuccess(JSONObject jsonObject) {
+                        try {
+                            music_text.setText(jsonObject.getString("content"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Throwable t) {
+
+                    }
+                }).start();
+            }
+        });
+
         get_request.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

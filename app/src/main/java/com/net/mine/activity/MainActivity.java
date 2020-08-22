@@ -1,4 +1,4 @@
-package com.net.mine;
+package com.net.mine.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.net.mine.R;
 import com.net.mine.client.GitHubClient;
 import com.net.mine.gson.GitHubResponse;
 

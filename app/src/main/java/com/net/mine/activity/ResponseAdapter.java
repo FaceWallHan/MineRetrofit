@@ -1,4 +1,4 @@
-package com.net.mine;
+package com.net.mine.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.net.mine.R;
 import com.net.mine.gson.GitHubResponse;
 
 import java.util.List;
