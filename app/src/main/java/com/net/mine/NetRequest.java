@@ -3,6 +3,7 @@ package com.net.mine;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.util.Log;
+import android.view.animation.BaseInterpolator;
 
 import com.net.mine.client.NetClient;
 
@@ -11,7 +12,11 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -62,9 +67,28 @@ public class NetRequest extends Thread{
     @Override
     public void run() {
         do {
+            OkHttpClient.Builder builder=new OkHttpClient.Builder()
+//                    .writeTimeout(5, TimeUnit.SECONDS)
+                    .readTimeout(10, TimeUnit.SECONDS)
+                    .connectTimeout(5, TimeUnit.SECONDS);
+            builder.addInterceptor(new Interceptor() {
+                @Override
+                public okhttp3.Response intercept(Chain chain) throws IOException {
+                    Request request=chain.request();
+                    request=request.newBuilder()
+                            .addHeader("","")
+                            .build();
+                    /**
+                     * OkHttp拦截器
+                     * */
+                    okhttp3.Response response=chain.proceed(request);
+                    return response;
+                }
+            });
             Retrofit retrofit=new Retrofit.Builder()
                     .baseUrl("https://api.uomg.com/api/")//只有这里地址加上“/”
                     //.addConverterFactory(GsonConverterFactory.create())
+                    .client(builder.build())
                     .build();
             NetClient client=retrofit.create(NetClient.class);
             Call<ResponseBody> call=client.getResource(url,objectMap);
