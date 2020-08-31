@@ -7,4 +7,9 @@
         android:text="发送验证码"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+    <Button
+        android:id="@+id/jitter"
+        android:text="防抖动"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 </LinearLayout>

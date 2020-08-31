@@ -81,8 +81,7 @@ public class NetRequest extends Thread{
                     /**
                      * OkHttp拦截器
                      * */
-                    okhttp3.Response response=chain.proceed(request);
-                    return response;
+                    return chain.proceed(request);
                 }
             });
             Retrofit retrofit=new Retrofit.Builder()

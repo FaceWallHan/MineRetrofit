@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.net.mine.R;
+import com.net.mine.ViewClickObservable;
 
 import java.util.concurrent.TimeUnit;
 
@@ -20,11 +21,13 @@ import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.functions.Action;
 import io.reactivex.rxjava3.functions.Consumer;
 import io.reactivex.rxjava3.functions.Function;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class RxTestActivity  extends AppCompatActivity {
-    private Button send;
+    private Button send,jitter;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +37,44 @@ public class RxTestActivity  extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 verify(send);
+            }
+        });
+        //observableClick(jitter,2,);
+    }
+    private void observableClick(View view, long seconds, View.OnClickListener listener){
+        new ViewClickObservable(view)
+                .throttleFirst(seconds,TimeUnit.SECONDS)//一定时间内取第一次发送的事件
+                ////将被观察者切换到io线程
+                .subscribeOn(Schedulers.io())
+                //将观察者切换到主线程  需要在Android环境下运行
+                .observeOn(AndroidSchedulers.mainThread())
+                //当dispose发生变化时调用
+                .doOnDispose(new Action() {
+                    @Override
+                    public void run() throws Throwable {
+                        if (view!=null){
+                            view.setOnClickListener(null);
+                        }
+                    }
+                }).subscribe(new Observer<Object>() {
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(@NonNull Object o) {
+                listener.onClick(view);
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
             }
         });
     }
@@ -87,5 +128,6 @@ public class RxTestActivity  extends AppCompatActivity {
     }
     private void inView(){
         send=findViewById(R.id.send);
+        jitter=findViewById(R.id.jitter);
     }
 }
